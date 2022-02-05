@@ -1,13 +1,13 @@
 <template>
   <q-page>
-    <LogInForm/>
+    <LogInForm @onSubmit="formSubmit"/>
   </q-page>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useRouter } from 'vue-router';
 import LogInForm from '@/components/LogInForm.vue'
+import { AuthApi } from '../api'
 
 export default defineComponent({
   name: 'LogIn',
@@ -15,12 +15,17 @@ export default defineComponent({
     LogInForm
   },
   setup () {
-    const router = useRouter();
-    const signup = () => {
-      router.push({name: 'SignUp'})
+    const formSubmit = async (username: string, password: string) => {
+      const res = await AuthApi.login(username, password);
+      if (res) {
+        localStorage.setItem('accessToken', res.accessToken);
+      } else {
+        console.log('login fail')
+      }
     }
+
     return {
-      signup
+      formSubmit
     }
   }
 });
