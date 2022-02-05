@@ -57,13 +57,16 @@ import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
   name: 'SignUpForm',
-  setup () {
+  setup (props, {emit}) {
     const username = ref('')
     const password = ref('')
     const rePassword = ref('')
 
     const onSubmit = () => {
-      console.log(username.value, password.value)
+      emit('onSubmit', {
+        username: username.value,
+        password: password.value
+      })
     }
     const onReset = () => {
       username.value = ''
