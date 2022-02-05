@@ -1,21 +1,19 @@
 <template>
   <q-page>
-    <div class="row flex-center">
-      <h1>LogIn Page</h1>
-    </div>
-    <div class="row flex-center">
-      <q-btn flat class="q-mr-xs" @click="signup">sign up</q-btn>
-    </div>
-    
+    <LogInForm/>
   </q-page>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useRouter } from 'vue-router';
+import LogInForm from '@/components/LogInForm.vue'
 
 export default defineComponent({
   name: 'LogIn',
+  components: {
+    LogInForm
+  },
   setup () {
     const router = useRouter();
     const signup = () => {
