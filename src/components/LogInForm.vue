@@ -47,14 +47,17 @@ import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
   name: 'LogInForm',
-  setup () {
+  setup (props, { emit }) {
     const router = useRouter();
 
     const username = ref('')
     const password = ref('')
 
     const onSubmit = () => {
-      console.log(username.value, password.value)
+      emit('onSubmit', { 
+        username: username.value, 
+        password: password.value
+      })
     }
 
     const goToSignUp = () => {
