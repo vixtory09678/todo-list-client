@@ -3,7 +3,9 @@
     <q-header elevated class="bg-cyan">
       <q-toolbar>
         <q-toolbar-title>
-          Todo List Client
+          <router-link :to="{name:'Home'}" style="text-decoration: none; color: white">
+            Todo List Client
+          </router-link>
         </q-toolbar-title>
 
         <div v-if="currentPage === 'SignUp' || currentPage === 'LogIn'"></div>
@@ -19,7 +21,7 @@
   </q-layout>
 </template>
 
-<script>
+<script lang="ts">
 import { computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 export default {
@@ -31,9 +33,15 @@ export default {
 
     onMounted(() => {
       const accessToken = localStorage.getItem('accessToken');
+      console.log('hello', accessToken)
       if (!accessToken) {
         router.replace({name: 'LogIn'})
       }
+      
+      if (Date.now() > getEXPFromToken(accessToken)) {
+        logout();
+      }
+      
     })
 
     router.beforeEach((to, from, next) => {
@@ -45,6 +53,12 @@ export default {
       }
       next()
     })
+
+    const getEXPFromToken = (accessToken: string) : number => {
+      const extractToken = accessToken.split('.')
+      const token = JSON.parse(atob(extractToken[1]))
+      return token.exp * 1000
+    }
 
     const logout = () => {
       localStorage.removeItem('accessToken')
