@@ -37,6 +37,12 @@ export default {
     })
 
     router.beforeEach((to, from, next) => {
+      if (to.name === 'Home') {
+        const accessToken = localStorage.getItem('accessToken');
+        if (!accessToken) {
+          router.replace({name: 'LogIn'})
+        }
+      }
       next()
     })
 
