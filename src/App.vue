@@ -33,7 +33,6 @@ export default {
 
     onMounted(() => {
       const accessToken = localStorage.getItem('accessToken');
-      console.log('hello', accessToken)
       if (!accessToken) {
         router.replace({name: 'LogIn'})
       }
