@@ -22,22 +22,24 @@
 </template>
 
 <script lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { getAccessToken } from '@/utils/access-token.utils.ts'
 export default {
   name: 'LayoutDefault',
   setup () {
     const route = useRoute()
     const router = useRouter()
     const currentPage = computed(() => route.name)
+    let accessToken = ref('')
 
     onMounted(() => {
-      const accessToken = localStorage.getItem('accessToken');
-      if (!accessToken) {
+      accessToken.value = getAccessToken()
+      if (!accessToken.value) {
         router.replace({name: 'LogIn'})
       }
       
-      if (Date.now() > getEXPFromToken(accessToken)) {
+      if (Date.now() > getEXPFromToken(accessToken.value)) {
         logout();
       }
       
@@ -45,8 +47,7 @@ export default {
 
     router.beforeEach((to, from, next) => {
       if (to.name === 'Home') {
-        const accessToken = localStorage.getItem('accessToken');
-        if (!accessToken) {
+        if (!accessToken.value) {
           router.replace({name: 'LogIn'})
         }
       }

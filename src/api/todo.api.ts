@@ -1,11 +1,7 @@
 import axios from 'axios'
 import { GetToDoList } from './interfaces/todo-res.interface'
 import { HOST } from './constant'
-
-const getAccessToken = (): string => {
-  const token = localStorage.getItem('accessToken') || ''
-  return token
-}
+import { getAccessToken } from '@/utils/access-token.utils'
 
 const addToDo = async function(name: string, detail?: string, pictureName?: string) : Promise<{ isCompleted: boolean, err?:string}> {
   try {
