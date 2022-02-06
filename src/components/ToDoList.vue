@@ -11,11 +11,14 @@
           </div>
         </div>
       </q-card-section>
-      <q-separator inset />
+      <q-separator inset style="margin-bottom: 10px"/>
+      <div v-for="item in todoItemsList" :key="item.id">
+      {{item}}
+      </div>
     </q-card>
 
     <q-dialog v-model="isShowAddDialog">
-      <ToDoItemAdd/>
+      <ToDoItemAdd @onAddTodoItem="onAddTodoItem"/>
     </q-dialog>
 
     <q-dialog v-model="isShowEditDialog">
@@ -25,9 +28,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, toRefs, watch } from 'vue';
 import ToDoItemAdd from '@/components/ToDoItemAdd.vue';
 import ToDoItemEdit from '@/components/ToDoItemEdit.vue';
+import { ToDoApi } from '../api'
 
 export default defineComponent({
   name: 'ToDoList',
@@ -35,9 +39,21 @@ export default defineComponent({
     ToDoItemAdd,
     ToDoItemEdit
   },
-  setup () {
+  props: {
+    todoItemsListProp: Array
+  },
+  setup (props, { emit }) {
+    const todoItemsList = ref(props.todoItemsListProp)
     let isShowAddDialog = ref(false)
     let isShowEditDialog = ref(false)
+
+    const onAddTodoItem = async ({ name, detail }: any) => {
+      console.log('on item add', name, detail);
+      const resp = await ToDoApi.addToDo(name, detail)
+      if (resp.isCompleted) {
+        emit('onToDoItemAdded', {})
+      }
+    }
 
     const addToDoItem = () => {
       showDialogAdd()
@@ -50,7 +66,9 @@ export default defineComponent({
     return {
       isShowAddDialog,
       isShowEditDialog,
-      addToDoItem
+      todoItemsList,
+      addToDoItem,
+      onAddTodoItem
     }
   }
 });
