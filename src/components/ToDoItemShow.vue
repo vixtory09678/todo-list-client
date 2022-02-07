@@ -3,7 +3,7 @@
     <q-card-section>
       <div v-if="todoItem.picturePath">
         <q-img
-          src="https://cdn.quasar.dev/img/parallax1.jpg"
+          :src="getImageByPath(todoItem.picturePath)"
           style="height: 200px; padding">
           <div class="absolute-bottom text-h6">
             {{todoItem.name}}
@@ -56,8 +56,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType, ref } from 'vue';
+import { defineComponent, PropType, ref } from 'vue';
 import { GetToDoList } from '../api/interfaces/todo-res.interface';
+import { getImageByPath } from '../utils'
 
 export default defineComponent({
   name: 'ToDoItemShow',
@@ -73,6 +74,7 @@ export default defineComponent({
 
     return { 
       todoItem,
+      getImageByPath,
       edit
     }
   }
