@@ -5,6 +5,6 @@ export interface GetToDoList {
   name: string;
   detail?: string;
   picturePath?: string;
-  isDone: boolean;
+  isDone?: boolean;
   createdAt: string
 }
