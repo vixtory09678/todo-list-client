@@ -50,6 +50,7 @@
 
 import { computed, defineComponent, onMounted, PropType, reactive, ref, toRefs, watch } from 'vue';
 import { GetToDoList } from '../api/interfaces/todo-res.interface';
+import { UpdateItem } from '../interfaces/todo.interface';
 
 export default defineComponent({
   name: 'ToDoItemEdit',
@@ -61,10 +62,12 @@ export default defineComponent({
     const { todoItemList } = toRefs(props)
     let todoName = ref('')
     let detail = ref('')
+    let isDone = ref(false)
 
     onMounted(() => {
       todoName.value = todoItemList.value?.name || ''
       detail.value = todoItemList.value?.detail || ''
+      isDone.value = todoItemList.value?.isDone || false
     }),
 
     watch(todoItemList, (val) => {
@@ -88,11 +91,16 @@ export default defineComponent({
 
     const save = () => {
       if (todoName.value) {
-        emit('onUpdateTodoItem', {
+
+        const data: UpdateItem = {
+          id: todoItemList.value?.id || '',
           name: todoName.value,
           detail: detail.value,
+          isDone: isDone.value,
           file: picture.hasFile ? picture.files[0] : undefined
-        })
+        }
+
+        emit('onUpdateTodoItem', data)
       } else {
         alert('Name is empty')
       }

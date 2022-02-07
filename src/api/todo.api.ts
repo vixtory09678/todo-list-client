@@ -3,6 +3,7 @@ import { GetToDoList } from './interfaces/todo-res.interface'
 import { HOST } from './constant'
 import { getAccessToken } from '@/utils'
 import FormData from 'form-data'
+import { AddToDoItem, UpdateToDoItem } from './interfaces/todo-req.interface'
 
 const uploadFile = async function(file: File) : Promise<string> {
   const data = new FormData();
@@ -20,7 +21,7 @@ const uploadFile = async function(file: File) : Promise<string> {
 
 const addToDo = async function(name: string, detail?: string, pictureName?: string) : Promise<{ isCompleted: boolean, err?:string}> {
   try {
-    const payload = {
+    const payload: AddToDoItem = {
       name, detail, pictureName
     }
     const headers = {
@@ -29,6 +30,24 @@ const addToDo = async function(name: string, detail?: string, pictureName?: stri
     const resp = await axios.post(HOST + '/todo', payload, { headers })
 
     const isCompleted: boolean = resp.status === 201
+    return { isCompleted, err: undefined }
+  } catch (err) {
+    if (axios.isAxiosError(err) && err.response) {
+      return { isCompleted: false, err: err.response.data.message }
+    }
+    return { isCompleted: false, err: undefined }
+  }
+}
+
+const updateTodo = async function (item: UpdateToDoItem) : Promise<{ isCompleted: boolean, err?:string}> {
+  try {
+    const payload: UpdateToDoItem = item
+    const headers = {
+      'Authorization': 'Bearer ' + getAccessToken()
+    }
+    const resp = await axios.put(HOST + '/todo/' + `${item.id}`, payload, { headers })
+
+    const isCompleted: boolean = resp.status === 200
     return { isCompleted, err: undefined }
   } catch (err) {
     if (axios.isAxiosError(err) && err.response) {
@@ -58,5 +77,6 @@ const getTodoList = async function() : Promise<{ getToDoList: GetToDoList[], err
 export {
   addToDo,
   getTodoList,
-  uploadFile
+  uploadFile,
+  updateTodo
 }

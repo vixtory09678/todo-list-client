@@ -25,13 +25,15 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from 'vue';
+import { computed, defineComponent, onMounted, ref, watch } from 'vue';
 import ToDoList from '@/components/ToDoList.vue';
 import ToDoItemAdd from '@/components/ToDoItemAdd.vue';
 import ToDoItemEdit from '@/components/ToDoItemEdit.vue';
 import ToDoItemShow from '@/components/ToDoItemShow.vue';
 import { GetToDoList } from '../api/interfaces/todo-res.interface';
 import { ToDoApi } from '../api';
+import { UpdateToDoItem } from '../api/interfaces/todo-req.interface';
+import { UpdateItem } from '../interfaces/todo.interface'
 
 export default defineComponent({
   name: 'Home',
@@ -104,8 +106,36 @@ export default defineComponent({
       }
     }
 
-    const onUpdateTodoItem = async (data: any) => {
-      console.log(data);
+    const onUpdateTodoItem = async (data: UpdateItem) => {
+
+      const payload: UpdateToDoItem = {
+        id : data.id,
+        name : data.name,
+        detail : data.detail,
+        isDone : data.isDone
+      };
+
+      let picturePath = findItemById(data.id)?.picturePath
+      if (picturePath) {
+        payload.pictureName = picturePath.slice(1)
+      }
+
+      if (data.file) {
+        const fileName = await ToDoApi.uploadFile(data.file)
+        if (!fileName) {
+          alert('Upload fail')
+          return
+        }
+        payload.pictureName = fileName
+      }
+
+      const resp = await ToDoApi.updateTodo(payload)
+      if (resp.isCompleted) {
+        await getAllItems()
+        isShowEditDialog.value = false
+      } else {
+        console.log('fail')
+      }
     }
 
     const onItemDelete = async (id: string) => {
