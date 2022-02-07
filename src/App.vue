@@ -24,7 +24,7 @@
 <script lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { getAccessToken } from '@/utils/access-token.utils.ts'
+import { getAccessToken } from '@/utils'
 export default {
   name: 'LayoutDefault',
   setup () {
