@@ -1,24 +1,25 @@
 <template>
-  <div class="q-pa-md" @click="onItemSelected">
-    <q-card flat class="my-card">
-
-      <div v-if="todoPicturePath">
+  <div class="q-pa-md">
+    <q-card flat class="my-card" @click="onItemSelected">
+    
+      <div v-if="picturePath">
+        
         <q-img
-          src="https://cdn.quasar.dev/img/parallax1.jpg"
+          :src="urlCover"
           style="height: 150px">
           <div class="absolute-bottom text-h6">
-            {{todoName}}
+            {{name}}
           </div>
         </q-img>
         <q-card-section>
-          <div class="text-subtitle2">{{todoId}}</div>
+          <div class="text-subtitle2">{{id}}</div>
         </q-card-section>
       </div>
 
       <div v-else>
         <q-card-section>
-          <div class="text-h6">{{todoName}}</div>
-          <div class="text-subtitle2">{{todoId}}</div>
+          <div class="text-h6">{{name}}</div>
+          <div class="text-subtitle2">{{id}}</div>
         </q-card-section>
       </div>
       
@@ -28,7 +29,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
+import { getImageByPath } from '../utils'
 
 export default defineComponent({
   name: 'ToDoItem',
@@ -42,6 +44,13 @@ export default defineComponent({
     const name = ref(props.todoName)
     const picturePath = ref(props.todoPicturePath)
 
+    const urlCover = computed(() => {
+      let path = picturePath?.value || ''
+      return getImageByPath(path)
+    })
+
+
+
     const onItemSelected = () => {
       emit('onSelected', id.value)
     }
@@ -50,6 +59,7 @@ export default defineComponent({
       id,
       name,
       picturePath,
+      urlCover,
       onItemSelected
     }
   }
@@ -65,5 +75,4 @@ export default defineComponent({
   cursor: pointer
   background-color: rgba(0,0,0,0.03)
   width: 100%
-
 </style>
