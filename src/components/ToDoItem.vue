@@ -8,7 +8,12 @@
           :src="urlCover"
           style="height: 150px">
           <div class="absolute-bottom text-h6">
-            {{name}}
+            <div v-if="!isDone">
+              <s>{{name}}</s>
+            </div>
+            <div v-else>
+              {{name}}
+            </div>
           </div>
         </q-img>
         <q-card-section>
@@ -18,7 +23,15 @@
 
       <div v-else>
         <q-card-section>
-          <div class="text-h6">{{name}}</div>
+          
+          <div class="text-h6">
+            <div v-if="isDone">
+              <s>{{name}}</s>
+            </div>
+            <div v-else>
+              {{name}}
+            </div>
+          </div>
           <div class="text-subtitle2">{{id}}</div>
         </q-card-section>
       </div>
@@ -35,11 +48,13 @@ import { getImageByPath } from '../utils'
 export default defineComponent({
   name: 'ToDoItem',
   props: {
+    todoIsDone: Boolean,
     todoId: String,
     todoName: String,
     todoPicturePath: String
   },
   setup (props, { emit }) {
+    const isDone = ref(props.todoIsDone)
     const id = ref(props.todoId)
     const name = ref(props.todoName)
     const picturePath = ref(props.todoPicturePath)
@@ -49,13 +64,12 @@ export default defineComponent({
       return getImageByPath(path)
     })
 
-
-
     const onItemSelected = () => {
       emit('onSelected', id.value)
     }
 
     return {
+      isDone,
       id,
       name,
       picturePath,

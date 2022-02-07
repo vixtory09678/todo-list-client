@@ -6,7 +6,12 @@
           :src="getImageByPath(todoItem.picturePath)"
           style="height: 200px; padding">
           <div class="absolute-bottom text-h6">
-            {{todoItem.name}}
+            <div v-if="!todoItem.isDone">
+              <s>{{todoItem.name}}</s>
+            </div>
+            <div v-else>
+              {{todoItem.name}}
+            </div>
           </div>
         </q-img>
 
@@ -22,7 +27,14 @@
       <div v-else>
         <div class="row no-wrap items-center q-pa-md">
           <div class="col-8">
-            <div class="text-h5">{{todoItem.name}}</div>
+            <div class="text-h5">
+              <div v-if="!todoItem.isDone">
+                <s>{{todoItem.name}}</s>
+              </div>
+              <div v-else>
+                {{todoItem.name}}
+              </div>
+            </div>
           </div>
 
           <div class="col text-grey text-caption q-ml-md">
