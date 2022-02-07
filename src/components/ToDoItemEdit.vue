@@ -13,7 +13,7 @@
       />
 
       <div class="row no-wrap items-center">
-        <div class="col-8">
+        <div class="col-7">
           <q-input bottom-slots v-model="todoName" label="Todo Name">
             <template v-slot:before>
               <q-icon name="edit" />
@@ -24,8 +24,9 @@
           </q-input>
         </div>
 
-        <div class="col text-grey text-caption q-ml-md">
+        <div class="col text-grey text-caption">            
           <q-card-actions align="right">
+            <q-checkbox align="left" size="xl" v-model="isDone"/>
             <q-btn color="red" icon="delete" @click="deleteItem"></q-btn>
             <q-btn color="positive" icon="save" @click="save">save</q-btn>
           </q-card-actions>
@@ -48,7 +49,7 @@
 
 <script lang="ts">
 
-import { computed, defineComponent, onMounted, PropType, reactive, ref, toRefs, watch } from 'vue';
+import { defineComponent, onMounted, PropType, reactive, ref, toRefs, watch } from 'vue';
 import { GetToDoList } from '../api/interfaces/todo-res.interface';
 import { UpdateItem } from '../interfaces/todo.interface';
 
@@ -107,6 +108,7 @@ export default defineComponent({
     }
 
     return {
+      isDone,
       todoName,
       detail,
       save,

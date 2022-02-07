@@ -6,8 +6,8 @@
           :src="urlCover"
           style="height: 150px">
           <div class="absolute-bottom text-h6">
-            <div v-if="!isDone">
-              <s>{{todoItem.name}}</s>
+            <div v-if="todoItem.isDone">
+              <s>{{todoItem.name}}</s> completed!
             </div>
             <div v-else>
               {{todoItem.name}}
@@ -24,7 +24,7 @@
           
           <div class="text-h6">
             <div v-if="todoItem.isDone">
-              <s>{{name}}</s>
+              <s>{{name}}</s> completed!
             </div>
             <div v-else>
               {{todoItem.name}}
