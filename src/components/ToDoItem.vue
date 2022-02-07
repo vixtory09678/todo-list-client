@@ -1,23 +1,21 @@
 <template>
   <div class="q-pa-md">
     <q-card flat class="my-card" @click="onItemSelected">
-    
-      <div v-if="picturePath">
-        
+      <div v-if="todoItem.picturePath">
         <q-img
           :src="urlCover"
           style="height: 150px">
           <div class="absolute-bottom text-h6">
             <div v-if="!isDone">
-              <s>{{name}}</s>
+              <s>{{todoItem.name}}</s>
             </div>
             <div v-else>
-              {{name}}
+              {{todoItem.name}}
             </div>
           </div>
         </q-img>
         <q-card-section>
-          <div class="text-subtitle2">{{id}}</div>
+          <div class="text-subtitle2">{{todoItem.id}}</div>
         </q-card-section>
       </div>
 
@@ -25,14 +23,14 @@
         <q-card-section>
           
           <div class="text-h6">
-            <div v-if="isDone">
+            <div v-if="todoItem.isDone">
               <s>{{name}}</s>
             </div>
             <div v-else>
-              {{name}}
+              {{todoItem.name}}
             </div>
           </div>
-          <div class="text-subtitle2">{{id}}</div>
+          <div class="text-subtitle2">{{todoItem.id}}</div>
         </q-card-section>
       </div>
       
@@ -42,37 +40,27 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, PropType, ref } from 'vue';
+import { GetToDoList } from '../api/interfaces/todo-res.interface';
 import { getImageByPath } from '../utils'
 
 export default defineComponent({
   name: 'ToDoItem',
   props: {
-    todoIsDone: Boolean,
-    todoId: String,
-    todoName: String,
-    todoPicturePath: String
+    todoItem: Object as PropType<GetToDoList>
   },
   setup (props, { emit }) {
-    const isDone = ref(props.todoIsDone)
-    const id = ref(props.todoId)
-    const name = ref(props.todoName)
-    const picturePath = ref(props.todoPicturePath)
 
     const urlCover = computed(() => {
-      let path = picturePath?.value || ''
+      let path = props.todoItem?.picturePath || ''
       return getImageByPath(path)
     })
 
     const onItemSelected = () => {
-      emit('onSelected', id.value)
+      emit('onSelected', props.todoItem?.id)
     }
 
     return {
-      isDone,
-      id,
-      name,
-      picturePath,
       urlCover,
       onItemSelected
     }

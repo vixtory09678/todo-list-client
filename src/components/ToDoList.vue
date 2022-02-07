@@ -1,7 +1,6 @@
 <template>
   <div class="row q-mt-xl justify-center">
     <q-card bordered class="my-card">
-
       <q-card-section >
         <div class="row items-center">
           <div class="col text-h6">
@@ -18,16 +17,15 @@
         v-for="item in getTodoItems"
         :key="item.id"
         @onSelected="itemSelected"
-        :todoId="item.id"
-        :todoName="item.name"
-        :todoPicturePath="item.picturePath"/>
+
+        :todoItem="item"/>
 
     </q-card>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, toRefs, watch } from 'vue';
+import { computed, defineComponent, onMounted, PropType, ref, toRefs, watch } from 'vue';
 import ToDoItem from '@/components/ToDoItem.vue'
 import { GetToDoList } from '../api/interfaces/todo-res.interface'
 
