@@ -68,8 +68,10 @@ export default defineComponent({
 
     const getAllItems = async () => {
       const res = await ToDoApi.getTodoList()
-      if (res.getToDoList.length) {
+      if (res.getToDoList) {
         todoItemsList.value = res.getToDoList
+      } else {
+        todoItemsList.value = []
       }
     }
 
@@ -114,8 +116,8 @@ export default defineComponent({
         detail : data.detail,
         isDone : data.isDone
       };
-
       let picturePath = findItemById(data.id)?.picturePath
+
       if (picturePath) {
         payload.pictureName = picturePath.slice(1)
       }
@@ -139,7 +141,13 @@ export default defineComponent({
     }
 
     const onItemDelete = async (id: string) => {
-      console.log('delete', findItemById(id))
+      const resp = await ToDoApi.deleteToDo(id);
+      if (resp.isCompleted) {
+        await getAllItems()
+        isShowEditDialog.value = false
+      } else {
+        console.log('fail')
+      }
     }
 
     return {

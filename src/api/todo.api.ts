@@ -57,6 +57,23 @@ const updateTodo = async function (item: UpdateToDoItem) : Promise<{ isCompleted
   }
 }
 
+const deleteToDo = async function (id: string) : Promise<{ isCompleted: boolean, err?:string}> {
+  try {
+    const headers = {
+      'Authorization': 'Bearer ' + getAccessToken()
+    }
+    const resp = await axios.delete(HOST + '/todo/' + `${id}`, { headers })
+
+    const isCompleted: boolean = resp.status === 200
+    return { isCompleted, err: undefined }
+  } catch (err) {
+    if (axios.isAxiosError(err) && err.response) {
+      return { isCompleted: false, err: err.response.data.message }
+    }
+    return { isCompleted: false, err: undefined }
+  }
+}
+
 const getTodoList = async function() : Promise<{ getToDoList: GetToDoList[], err?: string}> {
   try {
     const headers = {
@@ -78,5 +95,6 @@ export {
   addToDo,
   getTodoList,
   uploadFile,
-  updateTodo
+  updateTodo,
+  deleteToDo
 }
