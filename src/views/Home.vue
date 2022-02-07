@@ -1,7 +1,6 @@
 <template>
   <q-page>
     <ToDoList 
-      v-if="getItemList.length > 0"
       :todoItemsListProp="getItemList"
       @onItemSelected="onItemSelected"
       @onClickAddItem="isShowAddDialog = true"/>
@@ -11,7 +10,10 @@
     </q-dialog>
 
     <q-dialog v-model="isShowEditDialog">
-      <ToDoItemEdit/>
+      <ToDoItemEdit
+        :todoItemList="getToDoItem"
+        @onUpdateTodoItem="onUpdateTodoItem"
+        @onDeleteTodoItem="onItemDelete"/>
     </q-dialog>
 
     <q-dialog v-model="isItemShow" >
@@ -63,14 +65,17 @@ export default defineComponent({
     })
 
     const getAllItems = async () => {
-      const res = await ToDoApi.getTodoList();
+      const res = await ToDoApi.getTodoList()
       if (res.getToDoList.length) {
         todoItemsList.value = res.getToDoList
       }
     }
 
     const onItemEdit = (item: GetToDoList) => {
-      console.log('item to edit',item.id);
+      todoItem.value = item
+      console.log('item to edit',todoItem.value)
+      isItemShow.value = false
+      isShowEditDialog.value = true
     }
 
     const onItemSelected = (id: string) => {
@@ -78,15 +83,33 @@ export default defineComponent({
       isItemShow.value = true
     }
 
-    const onAddTodoItem = async ({ name, detail }: any) => {
-      console.log('on item add', name, detail);
-      const resp = await ToDoApi.addToDo(name, detail)
+    const onAddTodoItem = async ({ name, detail, file }: any) => {
+      console.log('on item add', name, detail, file);
+
+      let fileName = ''
+      if (file) {
+        fileName = await ToDoApi.uploadFile(file)
+        if (!fileName) {
+          alert('Upload fail')
+          return
+        }
+      }
+      
+      const resp = await ToDoApi.addToDo(name, detail, fileName)
       if (resp.isCompleted) {
         getAllItems()
         isShowAddDialog.value = false
       } else {
         console.log('fail')
       }
+    }
+
+    const onUpdateTodoItem = async (data: any) => {
+      console.log(data);
+    }
+
+    const onItemDelete = async (id: string) => {
+      console.log('delete', findItemById(id))
     }
 
     return {
@@ -97,8 +120,10 @@ export default defineComponent({
       getToDoItem,
 
       onItemSelected,
+      onItemDelete,
       onItemEdit,
-      onAddTodoItem
+      onAddTodoItem,
+      onUpdateTodoItem
     }
   }
 });
