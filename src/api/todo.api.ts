@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { GetToDoList } from './interfaces/todo-res.interface'
+import { GetToDoList, TodoPublic, ToDoPublicResponse } from './interfaces/todo-res.interface'
 import { HOST } from './constant'
 import { getAccessToken } from '@/utils'
 import FormData from 'form-data'
@@ -91,10 +91,43 @@ const getTodoList = async function() : Promise<{ getToDoList: GetToDoList[], err
   }
 }
 
+const getPublicToDoLink = async function (id: string) : Promise<{getTodoPublic?: TodoPublic, err?: string}> {
+  try {
+    const headers = {
+      'Authorization': 'Bearer ' + getAccessToken()
+    }
+    const resp = await axios.post(HOST + '/todo/public/' + `${id}`, {}, { headers })
+
+    const getTodoPublic: TodoPublic = resp.data
+    // getTodoPublic.publicLink = `${process.env.PUBLIC_URL || 'http://localhost:8001'}/public/` + getTodoPublic.publicLink
+    return { getTodoPublic, err: undefined }
+  } catch (err) {
+    if (axios.isAxiosError(err) && err.response) {
+      return { getTodoPublic: undefined, err: err.response.data.message }
+    }
+    return { getTodoPublic: undefined, err: undefined }
+  }
+}
+
+const getPublicTodo = async function (publicKey: string) : Promise<{getTodoPublic?: ToDoPublicResponse, err?: string}> {
+  try {
+    const resp = await axios.get(HOST + '/todo/public/' + `${publicKey}`)
+    const getTodoPublic: ToDoPublicResponse = resp.data
+    return { getTodoPublic, err: undefined }
+  } catch (err) {
+    if (axios.isAxiosError(err) && err.response) {
+      return { getTodoPublic: undefined, err: err.response.data.message }
+    }
+    return { getTodoPublic: undefined, err: undefined }
+  }
+}
+
 export {
   addToDo,
   getTodoList,
   uploadFile,
   updateTodo,
-  deleteToDo
+  deleteToDo,
+  getPublicToDoLink,
+  getPublicTodo
 }
