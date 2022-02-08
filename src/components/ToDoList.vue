@@ -14,7 +14,7 @@
 
       <q-separator inset style="margin-bottom: 10px"/>
       <ToDoItem
-        v-for="item in getTodoItems"
+        v-for="item in getTodoItems.reverse()"
         :key="item.id"
         @onSelected="itemSelected"
 
@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, PropType, ref, toRefs, watch } from 'vue';
+import { computed, defineComponent, PropType, toRefs } from 'vue';
 import ToDoItem from '@/components/ToDoItem.vue'
 import { GetToDoList } from '../api/interfaces/todo-res.interface'
 
