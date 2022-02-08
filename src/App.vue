@@ -8,8 +8,7 @@
           </router-link>
         </q-toolbar-title>
 
-        <div v-if="currentPage === 'SignUp' || currentPage === 'LogIn'"></div>
-        <div v-else>
+        <div v-if="currentPage === 'Home'">
           <q-btn flat class="q-mr-xs" @click="logout"> Logout</q-btn>
         </div>
       </q-toolbar>
@@ -34,11 +33,14 @@ export default {
     let accessToken = ref('')
 
     onMounted(() => {
+      var currentUrl = window.location.pathname;
+      if (currentUrl.startsWith('/public')) return
       accessToken.value = getAccessToken()
       if (!accessToken.value) {
         router.replace({name: 'LogIn'})
+        return
       }
-      
+      console.log(accessToken.value)
       if (Date.now() > getEXPFromToken(accessToken.value)) {
         logout();
       }
@@ -46,17 +48,15 @@ export default {
     })
 
     router.beforeEach((to, from, next) => {
-      if (to.name === 'Home') {
-        if (!accessToken.value) {
-          router.replace({name: 'LogIn'})
-        }
-      }
-      next()
+      if (to.name !== 'LogIn' && !accessToken.value) {
+        if (to.name === 'SignUp' || to.name === 'PublicToDo') next()
+        else next({name: 'LogIn'})
+      } else next()
     })
 
     const getEXPFromToken = (accessToken: string) : number => {
       const extractToken = accessToken.split('.')
-      const token = JSON.parse(atob(extractToken[1]))
+      const token = JSON.parse(Buffer.from(extractToken[1] as string, 'base64').toString())
       return token.exp * 1000
     }
 
