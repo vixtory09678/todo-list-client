@@ -81,7 +81,7 @@ export default defineComponent({
       picture.files = [...inPutFiles]
     }
 
-    const onFileRemoved = (inPutFiles: File[]) => {
+    const onFileRemoved = () => {
       picture.hasFile = true
       picture.files = []
     }
