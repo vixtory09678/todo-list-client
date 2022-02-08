@@ -5,3 +5,9 @@ export interface UpdateItem {
   isDone?: boolean;
   file?: File;
 }
+
+export interface AddItem {
+  name: string;
+  detail?: string;
+  file?: File;
+}
