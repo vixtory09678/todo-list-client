@@ -19,13 +19,14 @@
     <q-dialog v-model="isItemShow" >
       <ToDoItemShow
         @onItemNeedToEdit="onItemEdit"
+        @onPublicToDoGenerateURL="onPublicToDoGenerateURL"
         :item="getToDoItem"/>
     </q-dialog>
   </q-page>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, watch } from 'vue';
+import { computed, defineComponent, onMounted, ref } from 'vue';
 import ToDoList from '@/components/ToDoList.vue';
 import ToDoItemAdd from '@/components/ToDoItemAdd.vue';
 import ToDoItemEdit from '@/components/ToDoItemEdit.vue';
@@ -33,7 +34,8 @@ import ToDoItemShow from '@/components/ToDoItemShow.vue';
 import { GetToDoList } from '../api/interfaces/todo-res.interface';
 import { ToDoApi } from '../api';
 import { UpdateToDoItem } from '../api/interfaces/todo-req.interface';
-import { UpdateItem } from '../interfaces/todo.interface'
+import { AddItem, UpdateItem } from '../interfaces/todo.interface'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'Home',
@@ -44,6 +46,7 @@ export default defineComponent({
     ToDoItemShow
   },
   setup () {
+    const router = useRouter()
     let todoItemsList = ref<Array<GetToDoList>>([])
     let todoItem = ref<GetToDoList>()
     const isShowAddDialog = ref(false)
@@ -77,7 +80,6 @@ export default defineComponent({
 
     const onItemEdit = (item: GetToDoList) => {
       todoItem.value = item
-      console.log('item to edit',todoItem.value)
       isItemShow.value = false
       isShowEditDialog.value = true
     }
@@ -87,8 +89,7 @@ export default defineComponent({
       isItemShow.value = true
     }
 
-    const onAddTodoItem = async ({ name, detail, file }: any) => {
-      console.log('on item add', name, detail, file);
+    const onAddTodoItem = async ({ name, detail, file }: AddItem) => {
 
       let fileName = ''
       if (file) {
@@ -104,7 +105,7 @@ export default defineComponent({
         getAllItems()
         isShowAddDialog.value = false
       } else {
-        console.log('fail')
+        alert('fail')
       }
     }
 
@@ -136,17 +137,31 @@ export default defineComponent({
         await getAllItems()
         isShowEditDialog.value = false
       } else {
-        console.log('fail')
+        alert('fail')
       }
     }
 
     const onItemDelete = async (id: string) => {
-      const resp = await ToDoApi.deleteToDo(id);
+      const resp = await ToDoApi.deleteToDo(id)
       if (resp.isCompleted) {
         await getAllItems()
         isShowEditDialog.value = false
       } else {
-        console.log('fail')
+        alert('fail')
+      }
+    }
+
+    const onPublicToDoGenerateURL = async (id: string) => {
+      const resp = await ToDoApi.getPublicToDoLink(id)
+      if (resp.getTodoPublic) {
+        router.push({
+          name: 'PublicToDo',
+          params: {
+            publicKey: resp.getTodoPublic?.publicLink
+          }
+        })
+      } else {
+        alert('fail')
       }
     }
 
@@ -161,7 +176,8 @@ export default defineComponent({
       onItemDelete,
       onItemEdit,
       onAddTodoItem,
-      onUpdateTodoItem
+      onUpdateTodoItem,
+      onPublicToDoGenerateURL
     }
   }
 });

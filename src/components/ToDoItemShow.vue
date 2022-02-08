@@ -16,6 +16,13 @@
         </q-img>
 
         <q-btn
+          @click="genLink"
+          flat
+          color="white"
+          class="absolute"
+          style="bottom: 5px; right: 20px; transform: translateY(-50%);"
+        >Get Link</q-btn>
+        <q-btn
           @click="edit"
           fab
           color="primary"
@@ -47,12 +54,16 @@
                 class="absolute"
               />
             </q-card-actions>
-            <div v-if="hasFile==true" style="margin-left: 15px">
-              asdfasdf
-            </div>
           </div>
 
         </div>
+      <q-btn
+        @click="genLink"
+        flat
+        color="primary"
+        class="absolute"
+        style="bottom: 0px; transform: translateY(5%);"
+      >Get Link</q-btn>
       </div>
     </q-card-section>
 
@@ -84,10 +95,15 @@ export default defineComponent({
       emit('onItemNeedToEdit', todoItem.value)
     }
 
+    const genLink = () => {
+      emit('onPublicToDoGenerateURL', todoItem.value?.id)
+    }
+
     return { 
       todoItem,
       getImageByPath,
-      edit
+      edit,
+      genLink
     }
   }
 });
