@@ -40,7 +40,7 @@ export default {
         router.replace({name: 'LogIn'})
         return
       }
-      console.log(accessToken.value)
+      
       if (Date.now() > getEXPFromToken(accessToken.value)) {
         logout();
       }
