@@ -1,6 +1,6 @@
 {
   "name": "todo-list-client",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -9,9 +9,12 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
+    "axios": "^0.25.0",
     "core-js": "^3.6.5",
+    "form-data": "^4.0.0",
     "quasar": "^2.0.0",
     "vue": "^3.0.0",
+    "vue-clipboard3": "^1.0.1",
     "vue-router": "^4.0.0-0"
   },
   "devDependencies": {

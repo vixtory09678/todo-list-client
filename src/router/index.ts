@@ -16,6 +16,20 @@ const routes: Array<RouteRecordRaw> = [
     path: '/login',
     name: 'LogIn',
     component: () => import('../views/LogIn.vue')
+  },
+  {
+    path: '/public/:publicKey',
+    name: 'PublicToDo',
+    component: () => import('../views/PublicToDo.vue')
+  },
+  {
+    path: '/404',
+    name: 'PageNotFound',
+    component: () => import('../views/NotFound.vue') 
+  },
+  { 
+    path: '/:catchAll(.*)', 
+    redirect: '/404'
   }
 ]
 
